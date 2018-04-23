@@ -1,0 +1,25 @@
+function getMail(){
+ 
+  //未読メールのスレッドを検索して取得(10個分まで)
+  var myThreads = GmailApp.search("is:unread", 0, 10); 
+  //スレッドからメールを取得し二次元配列に格納
+  var myMessages = GmailApp.getMessagesForThreads(myThreads);
+  
+  //二次元配列の為、二重ループ
+  for(var i in myMessages){
+    for(var j in myMessages[i]){
+ 
+      //スターがなく、未読のメッセージのみ処理   
+      if(!myMessages[i][j].isStarred() && myMessages[i][j].isUnread()){ 
+        
+        var strDate　=　myMessages[i][j].getDate();  //受信日時を取得
+        var strSubject　=　myMessages[i][j].getSubject();  //題名を取得
+        
+        Logger.log(strDate + " " + strSubject);  //ログを出力
+        
+        myMessages[i][j].star();  //メールにスターをつける
+        
+      }
+    }
+  }
+}
