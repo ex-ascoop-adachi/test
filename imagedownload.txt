@@ -1,0 +1,37 @@
+//以下メモ
+/*
+  1.画像をGoogleDriveへ保存
+  2.保存した画像をLineの特定グループへ通知
+  3.通知後の処理
+  
+  ・URLが可変かどうか確認する
+  ・Chaos,WS共にその日で切り替わるのでその日通知で対応可能(そもそも履歴があるからいらないといえばいらない)
+  ・Chaosは番号で01から始まっていた。＞最大99まで回せば大丈夫そう。＞一週間で番号がリセットされそうな気がする＞ファイル名注意
+*/
+
+function myFunction() {
+
+  //画像を保存
+  //指定個所は下記３つ。フォルダはドライブにあらかじめ作っておくこと
+  var url = "https://www.google.co.jp/logos/doodles/2018/maria-reiches-115th-birthday-6296766839259136-law.gif"
+  var ImageName = "Gazotest"
+  var FolderName = "画像フォルダ"
+  
+  //以下実行部
+  var response = UrlFetchApp.fetch(url);  //ソース指定
+  var fileBlob = response.getBlob().setName(ImageName);  //ファイル取得
+  var file = DriveApp.createFile(fileBlob);  //Driveへアップロード
+  
+  // 予め作っておいた画像フォルダの情報を取得
+  var folders = DriveApp.getFoldersByName(FolderName);
+  while(folders.hasNext()) {
+    var folder = folders.next();
+    if(folder.getName() == FolderName){
+      break;
+    }
+  }
+
+  file.makeCopy(file.getName(), folder);  // ルートディレクトリに画像が保存されているので画像フォルダにコピー
+  file.setTrashed(true);  // ルートディレクトリの画像を削除
+  
+}
